@@ -116,5 +116,6 @@ class SVMPredictor(object):
         for z_i, x_i, y_i in zip(self._weights,
                                  self._support_vectors,
                                  self._support_vector_labels):
+            print x_i, x
             result += z_i * y_i * self._kernel(x_i, x)
         return np.sign(result).item()

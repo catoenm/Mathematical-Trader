@@ -7,6 +7,13 @@
 #Author: Mitchell Catoen
 ################################################
 
+import svmpy
+import logging
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import itertools
+import argh
 
 def process_stock_data(num_days):
 	from yahoo_finance import Share
@@ -15,8 +22,8 @@ def process_stock_data(num_days):
 	yahoo = Share('YHOO')
 	nasdaq.refresh()
 	yahoo.refresh()
-	index_data = nasdaq.get_historical('2016-01-17', '2017-04-17')
-	data = yahoo.get_historical('2016-01-17', '2017-04-17')
+	index_data = nasdaq.get_historical('2015-01-17', '2017-04-17')
+	data = yahoo.get_historical('2015-01-17', '2017-04-17')
 
 	# 0 Volume
 	# 1	Symbol
@@ -150,6 +157,24 @@ def plot_figure(me, mo, vo, title):
 	plt.ylabel('Value')
 	plt.title(title)
 	plt.show()
+
+def runSVM(feature_samples, label_samples):
+
+    num_samples=41
+    num_features=4
+    grid_size=20
+
+    samples = feature_samples
+    labels = label_samples
+
+    trainer = svmpy.SVMTrainer(svmpy.Kernel.linear(), 0.1)
+    predictor = trainer.train(samples, labels)
+    #plot(predictor, samples, labels, grid_size, filename)
+
+    #mom stock, vol stock, mom index, vol index
+    print predictor.predict([-1, 0.1, -1, 0.1])
+
+
 
 
 
