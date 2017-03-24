@@ -1,56 +1,65 @@
 
 
 ################################################
-#Main Application File
+#	Main Application File
 #
-#Author: Mitchell Catoen
+#	Author: Mitchell Catoen
 ################################################
-from helpers import process_stock_data
-from helpers import plot_figure
-from helpers import runSVM
+
+from helpers import *
 import matplotlib.pyplot as plt
 import svmpy
 import numpy as np
 
-movo_days = 20
-pred_days = 20 #Note, an extra day is added
-vo_stock, mo_stock, me_stock, vo_index, mo_index, me_index = process_stock_data(movo_days)
+movo_days = 25
+pred_days = 25 #Note, an extra day is added
 
-plot_figure(me_stock, mo_stock, vo_stock, 'Yahoo Stock Over Time')
-plot_figure(me_index, mo_index, vo_index, 'NASDAQ Index Over Time')
+################################################
+#
+#	Make DataSet and Sample Set
+#
+################################################
+# date_1 = '2010-01-17'
+# date_2 = '2014-01-17'
+date_1 = '2005-01-17'
+date_2 = '2010-01-17'
+vo_stock, mo_stock, me_stock, vo_index, mo_index, me_index = process_stock_data(date_1, date_2, movo_days)
+inc_dec = make_dataset(me_stock, pred_days)
 
-#Create a data set of Increased/Decreased from means
+################################################
+#
+#	Plot Graphs
+#
+################################################
 
-inc_dec = []
-for i in range(pred_days, len(me_stock)):
-	if (me_stock[i] > me_stock[i - pred_days]):
-		inc_dec.append(-1.0)
-	else:
-		inc_dec.append(1.0)
 
-plt.figure(1)
-plt.subplot(211)
-plt.plot(me_stock)
-plt.xlabel('Day')
-plt.ylabel('Value')
-plt.title("Yahoo Stock Over Time")
+plot_figure_triple(me_stock, mo_stock, vo_stock, 'Yahoo Stock Over Time')
+plot_figure_triple(me_index, mo_index, vo_index, 'NASDAQ Index Over Time')
+plot_figure_double(me_stock, inc_dec, "Yahoo Stock Over Time")
 
-plt.subplot(212)
-plt.plot(inc_dec)
-plt.xlabel('Day')
-plt.ylabel('Value')
-plt.title("Increase or Decrease in Last 20")
-plt.show()
+
+################################################
+#
+#	Train SVM Predictor
+#	Data Format: mom stock, vol stock, mom index, vol index
+#	Predictor Call: predictor.predict([1, 2, 3, 4])
+#
+################################################
+
 
 samples = np.column_stack((mo_stock, vo_stock, mo_index, vo_index))
+predictor = trainSVM(samples, np.asarray(inc_dec))
 
+date_1 = '2010-01-17'
+date_2 = '2017-01-17'
+vo_stock, mo_stock, me_stock, vo_index, mo_index, me_index = process_stock_data(date_1, date_2, movo_days)
+inc_dec = make_dataset(me_stock, pred_days)
 
-num_samples = 100
-num_features = 2
+plot_figure_triple(me_stock, mo_stock, vo_stock, 'Yahoo Stock Over Time')
+plot_figure_triple(me_index, mo_index, vo_index, 'NASDAQ Index Over Time')
+plot_figure_double(me_stock, inc_dec, "Yahoo Stock Over Time")
 
-runSVM(samples, np.asarray(inc_dec))
-
-
+run_test(pred_days, predictor, inc_dec, mo_stock, vo_stock, mo_index, vo_index)
 
 
 
