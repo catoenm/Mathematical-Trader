@@ -15,29 +15,30 @@ import matplotlib.cm as cm
 import itertools
 import argh
 
+
 def make_dataset(me, pred_days):
 	inc_dec = []
 	for i in range(0, len(me) - pred_days):
-		if (me[i] < me[i + pred_days]):
-			inc_dec.append(-1.0)
-		else:
+		if (me[i] < me[i + pred_days] - float(0.10)*me[i]):
 			inc_dec.append(1.0)
+		else:
+			inc_dec.append(-1.0)
 	return inc_dec
 
-def run_test(num_days, predictor, inc_dec, mo_stock, vo_stock, mo_index, vo_index):
+def run_test(num_days, predictor, inc_dec, mo_stock, vo_stock, mo_index, vo_index, stock_name):
 	hit = 0
 	for i in range (0, len(inc_dec) - 1):
 		prediction = predictor.predict([mo_stock[i], vo_stock[i], mo_index[i], vo_index[i]])
 		if prediction == inc_dec[i]:
 			hit = hit + 1
-	print "Hit Percentage: ", float(hit)/len(inc_dec)*100.0, "%"
+	print stock_name, " Hit Percentage: ", float(hit)/len(inc_dec)*100.0, "%"
 
 
 def process_stock_data(date_1, date_2, num_days, stock_name):
 	from yahoo_finance import Share
 
 	nasdaq = Share('^IXIC')
-	yahoo = Share('YHOO')
+	yahoo = Share(stock_name)
 	nasdaq.refresh()
 	yahoo.refresh()
 	index_data = nasdaq.get_historical(date_1, date_2)
@@ -158,14 +159,14 @@ def process_stock_data(date_1, date_2, num_days, stock_name):
 
 	return volatile_stock_total, momentum_stock_total, stock_means, volatile_index_total, momentum_index_total, index_means
 
-def plot_figure_triple(me, mo, vo, title):
+def plot_figure_triple(me, mo, vo, title, num):
 	import matplotlib.pyplot as plt
 
-	plt.figure(1)
+	plt.figure(num)
 	plt.subplot(211)
 	plt.plot(vo, label='Volatility')
 	plt.plot(mo, label='Momentum')
-	plt.title('Volatility and Momentum')
+	plt.title(title)
 	plt.ylabel('Value')
 	plt.legend()
 
@@ -173,11 +174,10 @@ def plot_figure_triple(me, mo, vo, title):
 	plt.plot(me)
 	plt.xlabel('Day')
 	plt.ylabel('Value')
-	plt.title(title)
-	plt.show()
+	plt.savefig("graphs/" + title + ".pdf")
 
-def plot_figure_double(me, inc, title):
-	plt.figure(1)
+def plot_figure_double(me, inc, title, num):
+	plt.figure(num)
 	plt.subplot(211)
 	plt.plot(me)
 	plt.xlabel('Day')
@@ -189,7 +189,7 @@ def plot_figure_double(me, inc, title):
 	plt.xlabel('Day')
 	plt.ylabel('Value')
 	plt.title("Increase or Decrease in Last 20")
-	plt.show()
+	plt.savefig("graphs/" + title + ".pdf")
 
 def trainSVM(feature_samples, label_samples):
 
