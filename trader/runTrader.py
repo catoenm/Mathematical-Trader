@@ -13,6 +13,7 @@ import numpy as np
 
 movo_days = 25
 pred_days = 25 #Note, an extra day is added
+stock_names = ["YHOO", "BBRY", "GOOG"]
 
 ################################################
 #
@@ -23,7 +24,7 @@ pred_days = 25 #Note, an extra day is added
 # date_2 = '2014-01-17'
 date_1 = '2005-01-17'
 date_2 = '2010-01-17'
-vo_stock, mo_stock, me_stock, vo_index, mo_index, me_index = process_stock_data(date_1, date_2, movo_days)
+vo_stock, mo_stock, me_stock, vo_index, mo_index, me_index = process_stock_data(date_1, date_2, movo_days, stock_names[0])
 inc_dec = make_dataset(me_stock, pred_days)
 
 ################################################
@@ -58,7 +59,7 @@ predictor = trainSVM(samples, np.asarray(inc_dec))
 
 date_1 = '2010-01-17'
 date_2 = '2017-01-17'
-vo_stock, mo_stock, me_stock, vo_index, mo_index, me_index = process_stock_data(date_1, date_2, movo_days)
+vo_stock, mo_stock, me_stock, vo_index, mo_index, me_index = process_stock_data(date_1, date_2, movo_days, stock_names[0])
 inc_dec = make_dataset(me_stock, pred_days)
 
 ################################################

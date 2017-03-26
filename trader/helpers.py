@@ -33,7 +33,7 @@ def run_test(num_days, predictor, inc_dec, mo_stock, vo_stock, mo_index, vo_inde
 	print "Hit Percentage: ", float(hit)/len(inc_dec)*100.0, "%"
 
 
-def process_stock_data(date_1, date_2, num_days):
+def process_stock_data(date_1, date_2, num_days, stock_name):
 	from yahoo_finance import Share
 
 	nasdaq = Share('^IXIC')
