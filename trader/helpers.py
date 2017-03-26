@@ -37,7 +37,7 @@ def process_stock_data(date_1, date_2, num_days):
 	from yahoo_finance import Share
 
 	nasdaq = Share('^IXIC')
-	yahoo = Share('BBRY')
+	yahoo = Share('YHOO')
 	nasdaq.refresh()
 	yahoo.refresh()
 	index_data = nasdaq.get_historical(date_1, date_2)
