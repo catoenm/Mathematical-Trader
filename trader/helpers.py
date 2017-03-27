@@ -19,7 +19,7 @@ import argh
 def make_dataset(me, pred_days):
 	inc_dec = []
 	for i in range(0, len(me) - pred_days):
-		if (me[i] < me[i + pred_days] - float(0.10)*me[i]):
+		if (me[i] < me[i + pred_days] - float(0.10)me[i]):
 			inc_dec.append(1.0)
 		else:
 			inc_dec.append(-1.0)
